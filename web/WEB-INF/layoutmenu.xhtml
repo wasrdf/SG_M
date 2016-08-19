@@ -1,0 +1,136 @@
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ps="http://primefaces.org/spark"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui">
+    <h:form>
+
+        <p:ajaxStatus style="width:32px;height:32px;position:fixed;left: 10px;top: 10px">
+            <f:facet name="start">
+                <p:graphicImage width="32" height="32" name="images/ajax001.gif" library="spark-layout"/>
+            </f:facet>
+
+            <f:facet name="complete">
+                <h:outputText value="" />
+            </f:facet>
+        </p:ajaxStatus>
+
+        <ps:menu>
+
+            <p:submenu label="GEDEM" icon="fa fa-group">
+                <p:menuitem value="Cadastro de Usuário" icon="fa fa-male" actionListener="#{loginController.mudarPagina('/usuario/usuario_cadastro.jsf')}"/>
+            </p:submenu>
+            <p:separator />
+            <p:submenu label="GECOM" icon="fa fa-reorder">
+                <p:menuitem value="Cartas PAM" icon="fa fa-envelope" actionListener="#{loginController.mudarPagina('/cartasPAM/cartasPAM.jsf')}"/>
+            </p:submenu>
+
+            <p:separator />
+            <p:submenu label="Movimentações" icon="fa fa-sitemap">
+                <p:submenu label="Cartão Ponto" icon="fa fa-male">
+                    <p:menuitem style="color: red"  value="Acesso Completo" icon="fa fa-male" actionListener="#{loginController.mudarPagina('/cliente/cliente.jsf')}"/>
+                    <p:menuitem style="color: red"  value="Somente Leitura" icon="fa fa-male" actionListener="#{loginController.mudarPagina('/cliente/cliente.jsf')}"/>
+                </p:submenu>
+                <p:menuitem value="Solicitações WEB" icon="fa fa-car" actionListener="#{loginController.mudarPagina('/veiculo/veiculo.jsf')}"/>
+                <p:menuitem value="Lançamento de Eventos" icon="fa fa-university" actionListener="#{loginController.mudarPagina('/unidade/unidade.jsf')}"/>
+                <p:menuitem value="Solicitações de Crachás" icon="fa fa-wrench" actionListener="#{loginController.mudarPagina('/funcao/funcao.jsf')}"/>
+                <p:menuitem value="Receber de Arquivo AFD" icon="fa fa-male" actionListener="#{loginController.mudarPagina('/pessoa/pessoa.jsf')}"/>
+                <p:submenu label="Comunicação" icon="fa fa-male">
+                    <p:menuitem style="color: red" value="Enviar e Receber" icon="fa fa-male" actionListener="#{loginController.mudarPagina('/cliente/cliente.jsf')}"/>
+                    <p:menuitem style="color: red" value="Receber de Arquivo" icon="fa fa-male" actionListener="#{loginController.mudarPagina('/cliente/cliente.jsf')}"/>
+                </p:submenu>
+            </p:submenu>
+
+            <p:separator />
+
+            <p:submenu label="Manutenção" icon="fa fa-key">
+                <p:submenu label="Usuários" icon="fa fa-male">
+                    <p:menuitem style="color: red" value="Cadastro" icon="fa fa-male" actionListener="#{loginController.mudarPagina('/cliente/cliente.jsf')}"/>
+                    <p:menuitem style="color: red" value="Restriições aos Menus" icon="fa fa-male" actionListener="#{loginController.mudarPagina('/cliente/cliente.jsf')}"/>
+                    <p:menuitem style="color: red" value="Logs de Informações" icon="fa fa-male" actionListener="#{loginController.mudarPagina('/cliente/cliente.jsf')}"/>
+                </p:submenu>                
+                <p:submenu label="Equipamentos" icon="fa fa-male">
+                    <p:menuitem style="color: red"  value="Cadastro" icon="fa fa-male" actionListener="#{loginController.mudarPagina('/cliente/cliente.jsf')}"/>
+                    <p:menuitem style="color: red" value="Funções do Equipamento" icon="fa fa-male" actionListener="#{loginController.mudarPagina('/cliente/cliente.jsf')}"/>
+                    <p:menuitem style="color: red" value="Status da Bobina" icon="fa fa-male" actionListener="#{loginController.mudarPagina('/cliente/cliente.jsf')}"/>
+                    <p:menuitem style="color: red" value="Status da Comunicação" icon="fa fa-male" actionListener="#{loginController.mudarPagina('/cliente/cliente.jsf')}"/>
+                </p:submenu>                
+                <p:submenu label="Serviços Online" icon="fa fa-male">
+                    <p:menuitem style="color: red" value="Atualizações Automáticas" icon="fa fa-male" actionListener="#{loginController.mudarPagina('/cliente/cliente.jsf')}"/>
+                    <p:menuitem style="color: red" value="BackUP Remoto" icon="fa fa-male" actionListener="#{loginController.mudarPagina('/cliente/cliente.jsf')}"/>
+                    <p:menuitem style="color: red" value="Módulo WEB na Nuvem" icon="fa fa-male" actionListener="#{loginController.mudarPagina('/cliente/cliente.jsf')}"/>
+                </p:submenu>               
+                <p:submenu label="Banco de Dados" icon="fa fa-male">
+                    <p:menuitem style="color: red" value="Importar" icon="fa fa-male" actionListener="#{loginController.mudarPagina('/cliente/cliente.jsf')}"/>
+                    <p:menuitem style="color: red" value="Compactar" icon="fa fa-male" actionListener="#{loginController.mudarPagina('/cliente/cliente.jsf')}"/>
+                    <p:menuitem style="color: red" value="Cópia de Segurança" icon="fa fa-male" actionListener="#{loginController.mudarPagina('/cliente/cliente.jsf')}"/>
+                </p:submenu>              
+                <p:submenu label="Exportação de Dados" icon="fa fa-male">
+                    <p:menuitem style="color: red" value="Exportar Funcionários" icon="fa fa-male" actionListener="#{loginController.mudarPagina('/cliente/cliente.jsf')}"/>
+                    <p:menuitem style="color: red" value="Exportar Batidas" icon="fa fa-male" actionListener="#{loginController.mudarPagina('/cliente/cliente.jsf')}"/>
+                    <p:menuitem style="color: red" value="Layouts de Exportação de Cálculos" icon="fa fa-male" actionListener="#{loginController.mudarPagina('/cliente/cliente.jsf')}"/>
+                </p:submenu>
+                <p:menuitem value="Importação de Funcionários" icon="fa fa-male" actionListener="#{loginController.mudarPagina('/cliente/cliente.jsf')}"/>
+                <p:menuitem value="Arquivar Cálculos" icon="fa fa-male" actionListener="#{loginController.mudarPagina('/cliente/cliente.jsf')}"/>
+                <p:menuitem value="Perguntas Adicionais" icon="fa fa-male" actionListener="#{loginController.mudarPagina('/cliente/cliente.jsf')}"/>
+                <p:menuitem value="Colunas MIX" icon="fa fa-male" actionListener="#{loginController.mudarPagina('/cliente/cliente.jsf')}"/>
+                <p:menuitem value="Justificativas" icon="fa fa-male" actionListener="#{loginController.mudarPagina('/cliente/cliente.jsf')}"/>
+                <p:menuitem value="Integração com Sistemas" icon="fa fa-male" actionListener="#{loginController.mudarPagina('/cliente/cliente.jsf')}"/>
+                <p:menuitem value="Alterações em Massa" icon="fa fa-male" actionListener="#{loginController.mudarPagina('/cliente/cliente.jsf')}"/>
+                <p:menuitem value="Rodapé do Cartão Ponto" icon="fa fa-male" actionListener="#{loginController.mudarPagina('/cliente/cliente.jsf')}"/>
+                <p:menuitem value="Visualizar Funcionários" icon="fa fa-male" actionListener="#{loginController.mudarPagina('/cliente/cliente.jsf')}"/>
+                <p:menuitem value="Configurações Especiais" icon="fa fa-male" actionListener="#{loginController.mudarPagina('/cliente/cliente.jsf')}"/>
+            </p:submenu>
+
+            <p:separator />
+
+            <p:submenu label="Relatórios" icon="fa fa-chain">
+                <p:menuitem value="Cálculos" icon="fa fa-check-square-o" actionListener="#{loginController.mudarPagina('/parametro/parametro.jsf')}"/>
+                <p:submenu label="Ponto Diário" icon="fa fa-male">
+                    <p:menuitem style="color: red" value="Acesso Completo" icon="fa fa-male" actionListener="#{loginController.mudarPagina('/cliente/cliente.jsf')}"/>
+                    <p:menuitem style="color: red" value="Somente Leitura" icon="fa fa-male" actionListener="#{loginController.mudarPagina('/cliente/cliente.jsf')}"/>
+                </p:submenu>
+                <p:menuitem value="Geração de Arquivos Físcais" icon="fa fa-check-square-o" actionListener="#{loginController.mudarPagina('/parametro/parametro.jsf')}"/>
+                <p:submenu label="Funcionários" icon="fa fa-male">
+                    <p:menuitem style="color: red" value="Listagem" icon="fa fa-male" actionListener="#{loginController.mudarPagina('/cliente/cliente.jsf')}"/>
+                    <p:menuitem style="color: red" value="Listagem por Departamento" icon="fa fa-male" actionListener="#{loginController.mudarPagina('/cliente/cliente.jsf')}"/>
+                    <p:menuitem style="color: red" value="Listagem por Situação" icon="fa fa-male" actionListener="#{loginController.mudarPagina('/cliente/cliente.jsf')}"/>
+                    <p:menuitem style="color: red" value="Listagem por Função" icon="fa fa-male" actionListener="#{loginController.mudarPagina('/cliente/cliente.jsf')}"/>
+                </p:submenu>
+                <p:menuitem value="Distribuição de Horário" icon="fa fa-check-square-o" actionListener="#{loginController.mudarPagina('/parametro/parametro.jsf')}"/>
+                <p:menuitem value="Listagem de Horário" icon="fa fa-check-square-o" actionListener="#{loginController.mudarPagina('/parametro/parametro.jsf')}"/>
+                <p:menuitem value="Escala Cíclica" icon="fa fa-check-square-o" actionListener="#{loginController.mudarPagina('/parametro/parametro.jsf')}"/>
+                <p:menuitem value="Ocorrências" icon="fa fa-check-square-o" actionListener="#{loginController.mudarPagina('/parametro/parametro.jsf')}"/>
+                <p:menuitem value="Absenteísmo" icon="fa fa-check-square-o" actionListener="#{loginController.mudarPagina('/parametro/parametro.jsf')}"/>
+                <p:menuitem value="Batidas Rejeitadas" icon="fa fa-check-square-o" actionListener="#{loginController.mudarPagina('/parametro/parametro.jsf')}"/>
+                <p:menuitem value="Funções" icon="fa fa-check-square-o" actionListener="#{loginController.mudarPagina('/parametro/parametro.jsf')}"/>
+                <p:menuitem value="Inconsistências" icon="fa fa-check-square-o" actionListener="#{loginController.mudarPagina('/parametro/parametro.jsf')}"/>
+                <p:menuitem value="Afastamento" icon="fa fa-check-square-o" actionListener="#{loginController.mudarPagina('/parametro/parametro.jsf')}"/>
+                <p:menuitem value="Quadro de Horário" icon="fa fa-check-square-o" actionListener="#{loginController.mudarPagina('/parametro/parametro.jsf')}"/>
+                <p:menuitem value="Números Provisórios" icon="fa fa-check-square-o" actionListener="#{loginController.mudarPagina('/parametro/parametro.jsf')}"/>
+                <p:menuitem value="Histórico de Centro de Custo" icon="fa fa-check-square-o" actionListener="#{loginController.mudarPagina('/parametro/parametro.jsf')}"/>
+                <p:menuitem value="Etiquetas" icon="fa fa-check-square-o" actionListener="#{loginController.mudarPagina('/parametro/parametro.jsf')}"/>
+                <p:menuitem value="Solicitações WEB" icon="fa fa-check-square-o" actionListener="#{loginController.mudarPagina('/parametro/parametro.jsf')}"/>
+            </p:submenu>
+
+            <p:separator />
+
+            <p:submenu label="Ajuda" icon="fa fa-chain">
+                <p:menuitem value="Conteúdo de Ajudo" icon="fa fa-check-square-o" actionListener="#{loginController.mudarPagina('/parametro/parametro.jsf')}"/>
+                <p:menuitem value="Como Obter Suporte" icon="fa fa-check-square-o" actionListener="#{loginController.mudarPagina('/parametro/parametro.jsf')}"/>
+                <p:menuitem value="Sobre o Sistema" icon="fa fa-check-square-o" actionListener="#{loginController.mudarPagina('/parametro/parametro.jsf')}"/>
+            </p:submenu>
+
+            <p:separator />
+
+            <p:submenu label="Segurança" icon="fa fa-cogs">
+                <p:menuitem value="Alterar senha"  icon="fa fa-lock"  actionListener="#{loginController.mudarPagina('/usuario/alterar_senha.jsf')}"/>
+                
+            </p:submenu>
+
+        </ps:menu>
+    </h:form>
+
+</ui:composition>

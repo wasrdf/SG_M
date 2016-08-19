@@ -1,0 +1,347 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="head">
+        <script type="text/javascript">
+            function skinChart() {
+                this.cfg.shadow = false;
+                this.cfg.seriesColors = ['#71CC8D', '#33AFDE', '#F7941E'];
+                this.cfg.grid = {
+                    background: '#EDF3F6',
+                    borderColor: '#D9E3E8',
+                    gridLineColor: '#D9E3E8',
+                    shadow: false
+                };
+                this.cfg.axesDefaults = {
+                    rendererOptions: {
+                        textColor: '#778D9B'
+                    }
+                };
+                this.cfg.seriesDefaults = {
+                    shadow: false,
+                    markerOptions: {
+                        shadow: false
+                    }
+                }
+            }
+
+            function skinPie() {
+                this.cfg.seriesColors = ['#dae8ef', '#27aae1', '#33ccff', '#9fadb5'];
+                this.cfg.grid = {
+                    background: '#ffffff',
+                    borderColor: '#eaeaea',
+                    gridLineColor: '#e5ebf0',
+                    shadow: false,
+                    borderWidth: 0
+                };
+                this.cfg.seriesDefaults.shadow = false;
+            }
+        </script>
+        <style type="text/css">
+            .jqplot-target, .jqplot-axis {
+                color: #778D9B;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="content"  >
+
+        <div class="layout-portlets-box" >
+            <div class="Container100 ui-fluid">
+                <div class="ContainerIndent"> 
+
+                    <h2 class="BigTopic">Usuário</h2>
+                    <p:messages id="messages"  autoUpdate="true" closable="true" />
+                    <p:growl autoUpdate="true"   id="msg"   />  
+                    <h:form id="frmLista" >
+
+                        <div class="Container100 Responsive100">
+                            <p:panelGrid rendered="#{usuarioController.tela == 0}" columns="3" layout="grid" styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-3,ui-grid-col-0,ui-grid-col-0">
+                                <p:outputLabel value="Pesquisa"/>
+                                <p:outputLabel value=""/>
+                                <p:outputLabel value=""/>
+
+                                <p:inputText value="#{usuarioController.pesquisa}"/>
+                                <p:commandButton value="Buscar" actionListener="#{usuarioController.listarUsuarios()}" update="listaPesquisa"/>
+                                <p:commandButton value="Novo" actionListener="#{usuarioController.novo()}" update=":frmDetalhe :frmLista" />
+                            </p:panelGrid>
+                        </div>
+
+                        <div class="Container100 Responsive100" >
+                            <p:dataTable id="listaPesquisa" var="p" value="#{usuarioController.listaUsuario}" rendered="#{usuarioController.tela == 0}" reflow="true" style="" emptyMessage="Lista vazia">
+                                <p:column width="10%" headerText="Nível" sortBy="#{p.nivel}">
+                                    <p:commandLink value="#{p.nivel}"  title="#{p.nivel}"  actionListener="#{usuarioController.selecionar(p)}"  update=":frmDetalhe :frmLista" />
+                                </p:column>
+                                <p:column width="10%" headerText="Usuário" sortBy="#{p.usuario}">
+                                    <p:commandLink value="#{p.usuario}"  title="#{p.usuario}"  actionListener="#{usuarioController.selecionar(p)}"  update=":frmDetalhe :frmLista" />
+                                </p:column>
+                                <p:column width="30%" headerText="Nome" sortBy="#{p.nome}">
+                                    <p:commandLink value="#{p.nome}"  title="#{p.nome}"  actionListener="#{usuarioController.selecionar(p)}"  update=":frmDetalhe :frmLista" />
+                                </p:column>
+                                <p:column width="20%" headerText="Categoria" sortBy="#{p.categoria}">
+                                    <p:commandLink value="#{p.categoria}"  title="#{p.categoria}"  actionListener="#{usuarioController.selecionar(p)}"  update=":frmDetalhe :frmLista" />
+                                </p:column>
+                                <p:column width="10%" headerText="Custo fixo público" sortBy="#{p.custoFixoPublico}">
+                                    <p:commandLink value="#{p.custoFixoPublico}"  title="#{p.custoFixoPublico}"  actionListener="#{usuarioController.selecionar(p)}"  update=":frmDetalhe :frmLista" />
+                                </p:column>
+                                <p:column width="10%" headerText="FIlial" sortBy="#{p.idFilial}">
+                                    <p:commandLink value="#{p.idFilial}"  title="#{p.idFilial}"  actionListener="#{usuarioController.selecionar(p)}"  update=":frmDetalhe :frmLista" />
+                                </p:column>
+                                <p:column width="10%" headerText="Dt. Cadastro" sortBy="#{p.dataCadastro}">
+                                    <h:outputText value="#{p.dataCadastro}"  title="#{p.dataCadastro}"  >
+                                        <f:convertDateTime type="date" pattern="dd/MM/yyyy" dateStyle="medium" locale="pt_BR" timeZone="GMT-3"/>
+                                    </h:outputText>
+                                </p:column>
+                                <p:column headerText="Detalhe" width="8%">
+                                    <p:commandButton icon="fa fa-search Fs18 white"  actionListener="#{usuarioController.selecionar(p)}"  update=":frmDetalhe :frmLista"/>
+                                </p:column>
+                            </p:dataTable>
+
+                        </div>
+                    </h:form>
+
+                    <h:form id="frmDetalhe">
+
+                        <p:panelGrid rendered="#{usuarioController.tela == 1}" columns="1" layout="grid" styleClass="ui-panelgrid-blank" >
+
+
+                            <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-6" >
+                                <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-12" > 
+                                    <h:outputText value="Código" />
+                                    <h:outputText value="#{usuarioController.usuario.idSgmUsuario}"  rendered="#{usuarioController.usuario.idSgmUsuario != 0}" />
+                                    <h:outputText value="*" rendered="#{usuarioController.usuario.idSgmUsuario == 0}"  />
+                                </p:panelGrid>
+                            </p:panelGrid>
+
+                            <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank"   >
+
+                                <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-12" > 
+                                    <h:outputText value="Nivel" />
+                                    <p:inputText value="#{usuarioController.usuario.nivel}"  required="#{param['frmDetalhe:salvar'] !=  null }" requiredMessage="Nível é obrigátorio" />                
+                                </p:panelGrid>
+
+                                <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-12" > 
+                                    <h:outputText value="Usuário" />
+                                    <p:inputText value="#{usuarioController.usuario.usuario}"  required="#{param['frmDetalhe:salvar'] !=  null }" requiredMessage="Usuário é obrigátorio" />                
+                                </p:panelGrid>
+                            </p:panelGrid>
+
+
+                            <p:panelGrid columns="4" layout="grid" styleClass="ui-panelgrid-blank"  columnClasses="ui-grid-col-6,ui-grid-col-2,ui-grid-col-6,ui-grid-col-2" > 
+                                <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank"  > 
+                                    <p:outputLabel value="Pessoa(CONEXUS)"  />
+                                    <p:inputText value="#{usuarioController.pesquisaPessoa}" />
+                                </p:panelGrid>
+
+                                <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank"  > 
+                                    <br/>
+                                    <p:commandButton  value="Pesquisar" actionListener="#{usuarioController.listarPessoaConexus()}" update="listaPessoa" />
+                                </p:panelGrid>
+
+                                <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank"   > 
+                                    <p:outputLabel value="Funcionário(PACK)"  />
+                                    <p:inputText value="#{usuarioController.pesquisaFuncionario}" />
+                                </p:panelGrid>
+
+                                <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank"  > 
+                                    <br/>
+                                    <p:commandButton  value="Pesquisar" actionListener="#{usuarioController.listarFuncionario()}" update="listaFuncionario" />
+                                </p:panelGrid>
+
+
+                            </p:panelGrid>
+
+                            <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank"  > 
+                                <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank"   >
+                                    <p:selectOneMenu required="#{param['frmDetalhe:salvar'] !=  null }" requiredMessage="Favor selecionar a pessoa(conexus)"  value="#{usuarioController.usuario.idPessoa}" id="listaPessoa" >
+                                        <f:selectItem itemLabel="Selecione a pessoa" itemValue="#{null}" />
+                                        <f:selectItems value="#{usuarioController.listaPessoaConexus}"  var="p" itemLabel="#{p.nmPessoa}" itemValue="#{p.idPessoa}" />
+                                    </p:selectOneMenu>
+                                </p:panelGrid>
+
+                                <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank" > 
+                                    <p:selectOneMenu required="#{param['frmDetalhe:salvar'] !=  null }" requiredMessage="Favor selecionar o funcionário(pack)"  value="#{usuarioController.usuario.idFuncionarioFP}" id="listaFuncionario"  >
+                                        <f:selectItem itemLabel="Selecione o funcionário" itemValue="#{null}" />
+                                        <f:selectItems value="#{usuarioController.listaFuncionario}"  var="f" itemLabel="#{f.nmPessoa} - #{f.filial}" itemValue="#{f.idPessoa}" />
+                                        <p:ajax event="change" listener="#{usuarioController.selecionarFuncionario}" update="pnlFilial" />
+                                    </p:selectOneMenu>
+                                </p:panelGrid>
+
+                            </p:panelGrid>
+
+                            <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-6,ui-grid-col-6">
+                                <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank" > 
+                                    <h:outputText value="Email" />
+                                    <p:inputText value="#{usuarioController.usuario.email}" />                
+                                </p:panelGrid>
+                                <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank" > 
+                                    <h:outputText value="Email do coordenador" />
+                                    <p:inputText  value="#{usuarioController.usuario.responsavelCartaPamEmail}" />                
+                                </p:panelGrid>
+                            </p:panelGrid>
+
+                            <p:panelGrid columns="3" layout="grid" styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-6,ui-grid-col-3,ui-grid-col-3"> 
+                                <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank" > 
+                                    <h:outputText value="Categoria" />
+                                    <p:selectOneMenu   value="#{usuarioController.usuario.categoria}"  >
+                                        <f:selectItem itemLabel="Selecione a categoria" itemValue="#{null}" />
+                                        <f:selectItem itemLabel="Aguardando Admissão" itemValue="Aguardando Admissão" />
+                                        <f:selectItem itemLabel="Criança" itemValue="Criança" />
+                                        <f:selectItem itemLabel="Missionário " itemValue="Missionário " />
+                                        <f:selectItem itemLabel="Missionário Ativo" itemValue="Missionário Ativo" />
+                                        <f:selectItem itemLabel="Missionário Demitido" itemValue="Missionário Demitido" />
+                                        <f:selectItem itemLabel="Projeto" itemValue="Projeto" />
+                                        <f:selectItem itemLabel="Processos Cancelados" itemValue="Processos Cancelados" />
+                                        <f:selectItem itemLabel="Aposentados" itemValue="Aposentados" />
+                                        <f:selectItem itemLabel="Radical Aluno" itemValue="Radical Aluno" />
+                                    </p:selectOneMenu>            
+                                </p:panelGrid>
+
+                                <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank" > 
+                                    <p:outputLabel value="Visualizar cartas PAM?" />
+                                    <p:selectOneMenu   value="#{usuarioController.usuario.cartasPam}"  >
+                                        <f:selectItem itemLabel="Não" itemValue="N" />
+                                        <f:selectItem itemLabel="Sim" itemValue="S" />
+                                    </p:selectOneMenu>             
+                                </p:panelGrid>
+
+                                <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank" > 
+                                    <p:outputLabel value="Situação" />
+                                    <p:selectOneMenu   value="#{usuarioController.usuario.situacao}"  >
+                                        <f:selectItem itemLabel="Selecione a situação" itemValue="#{null}" />
+                                        <f:selectItem itemLabel="Ativo" itemValue="Ativo     " />
+                                        <f:selectItem itemLabel="Inativo" itemValue="Inativo     " />
+                                    </p:selectOneMenu>             
+                                </p:panelGrid>
+
+                            </p:panelGrid>
+
+                            <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-6,ui-grid-col-3,ui-grid-col-3"> 
+                                <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank" > 
+                                    <p:outputLabel  value="Custo fixo público" />
+                                    <p:selectOneRadio  value="#{usuarioController.usuario.custoFixoPublico}">
+                                        <f:selectItem itemLabel="Sim" itemValue="Sim" />
+                                        <f:selectItem itemLabel="Não" itemValue="Não" />
+                                    </p:selectOneRadio>
+                                </p:panelGrid>
+                            </p:panelGrid>
+
+                            <p:accordionPanel id="pnlAc"  activeIndex="null"> 
+                                <p:tab title="Produtos vinculados">
+                                    <h:outputText value="Produtos vinculados" />
+                                    <p:dataTable value="#{usuarioController.produtosSelecionados}" var="ps" id="ps" emptyMessage="Nenhum registro encontrado" >
+                                        <p:column headerText="Nome">
+                                            <h:outputText value="#{ps.nomeProduto}" />
+                                        </p:column>
+                                        <p:column  headerText="Remover" width="10%" >
+                                            <p:commandButton   icon="fa fa-eraser"   actionListener="#{usuarioController.removerProduto(ps)}"      update=":frmDetalhe" />
+                                        </p:column>
+                                    </p:dataTable>
+
+
+
+                                    <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank" > 
+                                        <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank" > 
+                                            <br/>
+                                            <p:selectOneMenu filter="true" filterMatchMode="contains"     value="#{usuarioController.usuarioProduto.idProduto}"  >
+                                                <f:selectItem itemLabel="Selecione o produto" itemValue="#{null}" />
+                                                <f:selectItems value="#{usuarioController.listaProduto}" var="up" itemLabel="#{up.nomeProduto}" itemValue="#{up.idProduto}" />
+                                            </p:selectOneMenu>                           
+                                        </p:panelGrid>
+
+                                        <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-2" >
+                                            <br/>
+                                            <p:commandButton value="Adicionar" action="#{usuarioController.adicionarProduto}" update=":frmDetalhe" />
+                                        </p:panelGrid>
+
+                                    </p:panelGrid>
+
+                                </p:tab>
+
+                                <p:tab title="Centro de Custo">
+
+                                    <p:outputLabel value="Centro de Custo" />
+
+                                    <p:dataTable value="#{usuarioController.centroCustoSelecionados}" var="custoSelecionado" id="custoSelecionado" emptyMessage="Nenhum registro encontrado" >
+                                        <p:column headerText="Nome">
+                                            <h:outputText value="#{custoSelecionado.nmCentroDeCusto}" />
+                                        </p:column>
+                                        <p:column  headerText="Remover" width="10%" >
+                                            <p:commandButton   icon="fa fa-eraser"   actionListener="#{usuarioController.removerCentroCusto(custoSelecionado)}"        update=":frmDetalhe" />
+                                        </p:column>
+                                    </p:dataTable>
+
+
+                                    <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank" > 
+                                        <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank" > 
+                                            <br/>
+                                            <p:selectOneMenu filter="true"  filterMatchMode="contains"   value="#{usuarioController.centroCustoMissionario.idCusto}"  >
+                                                <f:selectItem itemLabel="Selecione o centro de custo" itemValue="#{null}" />
+                                                <f:selectItems value="#{usuarioController.listaCentroCusto}" var="ccusto" itemLabel="#{ccusto.cdChamada} -  #{ccusto.nmCentroDeCusto}" itemValue="#{ccusto.idCentroCusto}" />
+                                            </p:selectOneMenu>                           
+                                        </p:panelGrid>
+
+                                        <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-2" >
+                                            <br/>
+                                            <p:commandButton value="Adicionar" action="#{usuarioController.adicionarCentroCusto()}" update=":frmDetalhe" />
+                                        </p:panelGrid>
+
+                                    </p:panelGrid>
+
+
+                                </p:tab>
+
+                            </p:accordionPanel>
+
+                            <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-6" >
+                                <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-12" > 
+                                    <p:outputLabel value="Data de Cadastro" />
+                                    <p:outputLabel value="#{usuarioController.usuario.dataCadastro}" >                
+                                        <f:convertDateTime type="date" pattern="dd/MM/yyyy" dateStyle="medium" locale="pt_BR" timeZone="GMT-3"/>
+                                    </p:outputLabel>
+                                </p:panelGrid>
+                            </p:panelGrid>
+
+                            <p:panelGrid id="pnlFilial" columns="1" layout="grid" styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-6" >
+                                <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-12" >                                    
+                                    <p:outputLabel value="#{usuarioController.usuario.idFilial}" >                                                        
+                                    </p:outputLabel>
+                                </p:panelGrid>
+                            </p:panelGrid>
+
+
+
+                            <!--*****************************FIM****************************-->
+
+                            <h2 class="BigTopic"> </h2>
+
+                            <p:panelGrid   columns="4"  layout="grid" styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-0,ui-grid-col-0,ui-grid-col-0,ui-grid-col-0">
+                                <p:commandButton value="Salvar" actionListener="#{usuarioController.salvar(0)}" id="salvar" ajax="false" update=":frmDetalhe :frmLista msg"/>
+                                <p:commandButton value="Voltar" immediate="true" actionListener="#{usuarioController.mudarTela(0)}" update=":frmDetalhe :frmLista" />
+
+                                <p:commandButton value="Deletar" styleClass="RedButton" actionListener="#{usuarioController.deletar(0)}"  rendered="#{usuarioController.usuario.idSgmUsuario!=0}" update=":frmDetalhe :frmLista msg">
+                                    <p:confirm header="Confirmação" message="Deseja excluir o registro?" icon="ui-icon-alert" />
+                                </p:commandButton>
+
+                                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                                    <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" />
+                                    <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" />
+                                </p:confirmDialog>                                                              
+
+                            </p:panelGrid>
+
+
+                        </p:panelGrid>
+
+                    </h:form>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>

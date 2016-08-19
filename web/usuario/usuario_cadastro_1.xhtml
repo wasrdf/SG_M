@@ -1,0 +1,260 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="head">
+        <script type="text/javascript">
+            function skinChart() {
+                this.cfg.shadow = false;
+                this.cfg.seriesColors = ['#71CC8D', '#33AFDE', '#F7941E'];
+                this.cfg.grid = {
+                    background: '#EDF3F6',
+                    borderColor: '#D9E3E8',
+                    gridLineColor: '#D9E3E8',
+                    shadow: false
+                };
+                this.cfg.axesDefaults = {
+                    rendererOptions: {
+                        textColor: '#778D9B'
+                    }
+                };
+                this.cfg.seriesDefaults = {
+                    shadow: false,
+                    markerOptions: {
+                        shadow: false
+                    }
+                }
+            }
+
+            function skinPie() {
+                this.cfg.seriesColors = ['#dae8ef', '#27aae1', '#33ccff', '#9fadb5'];
+                this.cfg.grid = {
+                    background: '#ffffff',
+                    borderColor: '#eaeaea',
+                    gridLineColor: '#e5ebf0',
+                    shadow: false,
+                    borderWidth: 0
+                };
+                this.cfg.seriesDefaults.shadow = false;
+            }
+        </script>
+        <style type="text/css">
+            .jqplot-target, .jqplot-axis {
+                color: #778D9B;
+            }
+        </style>
+        <f:metadata>
+            <f:viewAction action="#{usuarioController.limparCamposDePesquisa()}" />
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="content"  >
+
+        <div class="layout-portlets-box" >
+            <div class="Container100 ui-fluid">
+                <div class="ContainerIndent"> 
+
+                    <h2 class="BigTopic">Cadastro de Usuário</h2>
+                    <p:messages id="messages"  autoUpdate="true" closable="true" />
+                    <p:growl id="msg"  sticky="true" />  
+
+                    <h:form id="frmLista" >
+
+                        <div class="Container100 Responsive100">
+                            <p:panelGrid rendered="#{usuarioController.tela == 0}" columns="3" layout="grid" styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-3,ui-grid-col-0,ui-grid-col-0">
+                                <p:outputLabel value="Pesquisa"/>
+                                <p:outputLabel value=""/>
+                                <p:outputLabel value=""/>
+
+                                <p:inputText value="#{usuarioController.pesquisa}"/>
+                                <p:commandButton value="Buscar" actionListener="#{usuarioController.listarUsuarios()}" update="listaPesquisa"/>
+                                <p:commandButton value="Novo" actionListener="#{usuarioController.novo()}" update=":frmDetalhe :frmLista" />
+                            </p:panelGrid>
+                        </div>
+
+                        <div class="Container100 Responsive100" >
+                            <p:dataTable id="listaPesquisa" var="usuario" value="#{usuarioController.listaUsuario}" rendered="#{usuarioController.tela == 0}" reflow="true" style="" emptyMessage="Lista vazia">
+
+                                <p:column headerText="Nome" sortBy="#{usuario.nome}" >
+                                    <p:commandLink value="#{usuario.nome}"  title="#{usuario.nome}"  actionListener="#{usuarioController.selecionar(usuario)}"  update=":frmDetalhe :frmLista" />
+                                </p:column>
+
+                                <p:column headerText="Detalhe" width="8%">
+                                    <p:commandButton icon="fa fa-search Fs18 white"  actionListener="#{usuarioController.selecionar(usuario)}"  update=":frmDetalhe :frmLista"/>
+                                </p:column>
+                            </p:dataTable>
+
+                        </div>
+                    </h:form>
+
+                    <h:form id="frmDetalhe">
+                        <div class="Container100 Responsive100">
+
+                            <p:panelGrid rendered="#{usuarioController.tela == 1}" columns="1" layout="grid" styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-3,ui-grid-col-0,ui-grid-col-0">
+
+                                <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-3,ui-grid-col-0,ui-grid-col-0">
+                                    <h:outputText value="Código" />
+                                    <h:outputText value="#{usuarioController.usuario.idSgmUsuario}"  rendered="#{usuarioController.usuario.idSgmUsuario != 0}" />
+                                    <h:outputText value="*" rendered="#{usuarioController.usuario.idSgmUsuario == 0}"  />
+                                </p:panelGrid>
+
+
+
+                                <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank"  >
+                                    <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-10,ui-grid-col-10">
+                                        <h:outputText value="Nível" />
+                                        <p:inputText value="#{usuarioController.usuario.nivel}" required="#{param['frmDetalhe:salvar'] !=  null }" requiredMessage="Nível é obrigatório"/>                
+                                    </p:panelGrid>
+
+                                    <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank" >
+                                        <h:outputText value="Usuário" />
+                                        <p:inputText value="#{usuarioController.usuario.usuario}" required="#{param['frmDetalhe:salvar'] !=  null }" requiredMessage="Usuário é obrigatório"/>             
+                                    </p:panelGrid>
+
+
+
+                                </p:panelGrid>
+
+
+
+
+
+                                <p:outputLabel value="Pessoa(CONEXUS)"  />
+                                <h:panelGrid class="" columns="2">
+                                    <p:inputText value="#{usuarioController.pesquisaPessoa}" />
+                                    <p:commandButton  value="Pesquisar" actionListener="#{usuarioController.listarPessoaConexus()}" update="listaPessoa" />
+                                </h:panelGrid>
+                                <h:panelGrid>
+                                    <p:selectOneMenu style="width: 310px" value="#{usuarioController.usuario.idPessoa}" id="listaPessoa" >
+                                        <f:selectItem itemLabel="Selecione a pessoa" itemValue="#{null}" />
+                                        <f:selectItems value="#{usuarioController.listaPessoaConexus}"  var="p" itemLabel="#{p.nmPessoa}" itemValue="#{p.idPessoa}" />
+                                    </p:selectOneMenu>
+                                </h:panelGrid>
+                                <br/>
+
+                                <p:outputLabel value="Pessoa(CONEXUS)"  />
+                                <h:panelGrid class="" columns="2">
+                                    <p:inputText value="#{usuarioController.pesquisaFuncionario}" />
+                                    <p:commandButton  value="Pesquisar" actionListener="#{usuarioController.listarFuncionario()}" update="listaFuncionario" />
+                                </h:panelGrid>
+                                <h:panelGrid>
+                                    <p:selectOneMenu  style="width: 310px" value="#{usuarioController.usuario.idFuncionarioFP}" id="listaFuncionario" >
+                                        <f:selectItem itemLabel="Selecione o funcionário" itemValue="#{null}" />
+                                        <f:selectItems value="#{usuarioController.listaFuncionario}"  var="f" itemLabel="#{f.nmPessoa} - #{f.filial}" itemValue="#{f.idPessoa}" />
+                                        <p:ajax event="change" listener="#{usuarioController.selecionarFuncionario}" update="pnlFilial" />
+                                    </p:selectOneMenu>
+                                </h:panelGrid>
+                                <br/>
+                                <h:panelGroup id="pnlFilial">
+                                    <p:outputLabel value="#{usuarioController.usuario.idFilial}" />
+                                </h:panelGroup>
+                                <br/>
+
+
+                                <p:panelGrid>
+                                    <p:outputLabel value="Email" />
+                                    <p:inputText   value="#{usuarioController.usuario.email}" />
+                                </p:panelGrid>
+                                <br/>
+                                <h:panelGrid>
+                                    <p:outputLabel value="Categória" />
+                                    <p:selectOneMenu  style="width: 310px" value="#{usuarioController.usuario.categoria}"  >
+                                        <f:selectItem itemLabel="Selecione a categoria" itemValue="#{null}" />
+                                        <f:selectItem itemLabel="Aguardando Admissão" itemValue="Aguardando Admissão" />
+                                        <f:selectItem itemLabel="Criança" itemValue="Criança" />
+                                        <f:selectItem itemLabel="Missionário " itemValue="Missionário " />
+                                        <f:selectItem itemLabel="Missionário Ativo" itemValue="Missionário Ativo" />
+                                        <f:selectItem itemLabel="Missionário Demitido" itemValue="Missionário Demitido" />
+                                        <f:selectItem itemLabel="Projeto" itemValue="Projeto" />
+                                        <f:selectItem itemLabel="Processos Cancelados" itemValue="Processos Cancelados" />
+                                        <f:selectItem itemLabel="Aposentados" itemValue="Aposentados" />
+                                        <f:selectItem itemLabel="Radical Aluno" itemValue="Radical Aluno" />
+                                    </p:selectOneMenu>
+                                </h:panelGrid>
+                                <br/>
+                                <h:panelGrid columns="2" >
+                                    <p:outputLabel  value="Custo fixo público" />
+                                    <p:selectOneRadio  value="#{usuarioController.usuario.custoFixoPublico}">
+                                        <f:selectItem itemLabel="Sim" itemValue="Sim" />
+                                        <f:selectItem itemLabel="Não" itemValue="Não" />
+                                    </p:selectOneRadio>
+                                </h:panelGrid>
+                                <br/>
+                                <p:panelGrid>
+                                    <p:outputLabel value="Data termo de aceito" />
+                                    <p:outputLabel   value="#{usuarioController.usuario.termoAceitoDataOk}" />
+                                </p:panelGrid>
+                                <br/>
+
+                                <p:accordionPanel id="pnlAc"  activeIndex="null"> 
+                                    <p:tab title="Produtos vinculados">
+
+                                        <p:outputLabel value="Produtos selecionados" />
+                                        <p:dataTable  var="prodSelecionados" value="#{usuarioController.produtosSelecionados}"  reflow="true" style="" emptyMessage="Lista vazia">
+                                            <p:column headerText="Descrição" sortBy="#{prodSelecionados.nomeProduto}" >
+                                                <p:commandLink value="#{prodSelecionados.nomeProduto}"  title="#{prodSelecionados.nomeProduto}"   update=":frmDetalhe" />
+                                            </p:column>
+                                            <p:column headerText="Detalhe" width="8%">
+                                                <p:commandButton icon="fa fa-search Fs18 white"   actionListener="#{usuarioController.selecionarProduto(prod)}"  update=":frmDetalhe"/>
+                                            </p:column>
+                                        </p:dataTable>
+
+
+
+                                        <p:outputLabel value="Pesquisar pelo nome ou código" />
+                                        <p:panelGrid  columns="2">
+                                            <p:inputText value="#{usuarioController.pesquisaProduto}" />
+                                            <p:commandButton value="Pesquisar" action="#{usuarioController.listarProduto()}" update="produtos" />
+                                        </p:panelGrid>
+                                        <br/>
+                                        <br/>
+
+                                        <div id="div1" class="Container100 Responsive100" >
+                                            <p:dataTable id="produtos" var="prod" value="#{usuarioController.listaProduto}"  reflow="true" style="" emptyMessage="Lista vazia">
+                                                <p:column headerText="Descrição" sortBy="#{prod.nomeProduto}" >
+                                                    <p:commandLink value="#{prod.nomeProduto}" actionListener="#{usuarioController.selecionarProduto(prod)}"   title="#{prod.nomeProduto}"   update=":frmDetalhe" />
+                                                </p:column>
+                                                <p:column headerText="Detalhe" width="8%">
+                                                    <p:commandButton icon="fa fa-search Fs18 white"   actionListener="#{usuarioController.selecionarProduto(prod)}"  update=":frmDetalhe"/>
+                                                </p:column>
+                                            </p:dataTable>
+                                            <br/>
+
+                                        </div>
+
+                                    </p:tab>
+
+
+                                </p:accordionPanel>
+
+
+
+                                <h2 class="BigTopic"> </h2>
+
+                                <p:panelGrid columns="4" layout="grid" styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-0,ui-grid-col-0,ui-grid-col-0,ui-grid-col-0">
+                                    <p:commandButton value="Salvar" actionListener="#{usuarioController.salvar(1)}" id="salvar" update=":frmDetalhe :frmLista msg"/>
+                                    <p:commandButton value="Voltar" immediate="true" actionListener="#{usuarioController.mudarTela(0)}" update=":frmDetalhe :frmLista" />
+                                    <p:commandButton value="Deletar" styleClass="RedButton" actionListener="#{usuarioController.deletarPessoa()}" rendered="#{usuarioController.usuario.idSgmUsuario!=0}" update=":frmDetalhe :frmLista msg">
+                                        <p:confirm header="Confirmação" message="Deseja excluir o registro?" icon="ui-icon-alert" />
+                                    </p:commandButton>
+
+                                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                                        <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" />
+                                        <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" />
+                                    </p:confirmDialog>                                                              
+
+                                </p:panelGrid>
+
+
+                            </p:panelGrid>
+                        </div>
+                    </h:form>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>

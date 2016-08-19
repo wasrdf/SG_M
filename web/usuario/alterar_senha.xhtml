@@ -1,0 +1,96 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="head">
+        <script type="text/javascript">
+            function skinChart() {
+                this.cfg.shadow = false;
+                this.cfg.seriesColors = ['#71CC8D', '#33AFDE', '#F7941E'];
+                this.cfg.grid = {
+                    background: '#EDF3F6',
+                    borderColor: '#D9E3E8',
+                    gridLineColor: '#D9E3E8',
+                    shadow: false
+                };
+                this.cfg.axesDefaults = {
+                    rendererOptions: {
+                        textColor: '#778D9B'
+                    }
+                };
+                this.cfg.seriesDefaults = {
+                    shadow: false,
+                    markerOptions: {
+                        shadow: false
+                    }
+                }
+            }
+
+            function skinPie() {
+                this.cfg.seriesColors = ['#dae8ef', '#27aae1', '#33ccff', '#9fadb5'];
+                this.cfg.grid = {
+                    background: '#ffffff',
+                    borderColor: '#eaeaea',
+                    gridLineColor: '#e5ebf0',
+                    shadow: false,
+                    borderWidth: 0
+                };
+                this.cfg.seriesDefaults.shadow = false;
+            }
+        </script>
+        <style type="text/css">
+            .jqplot-target, .jqplot-axis {
+                color: #778D9B;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="content"  >
+
+        <div class="layout-portlets-box" >
+            <div class="Container100 ui-fluid">
+                <div class="ContainerIndent"> 
+
+                    <h2 class="BigTopic">Alterar senha</h2>
+                    <h:form id="frmDetalhe">
+                 
+                        <p:growl id="msg"  autoUpdate="true" life="5" sticky="true" />  
+                        <p:panelGrid > 
+                            <p:panelGrid columns="3" layout="grid" styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-4,ui-grid-col-4,ui-grid-col-4" > 
+                                <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank" > 
+                                    <h:outputText  value="Senha atual" />
+                                    <p:inputText type="password" value="#{loginController.usuario.senha}" required="true" requiredMessage="Favor informar sua senha atual."/>                
+                                </p:panelGrid>
+                                <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank" > 
+                                    <h:outputText  value="Nova senha" />
+                                    <p:inputText type="password" value="#{loginController.novaSenha}" required="true" requiredMessage="Favor informar sua nova senha." />                
+                                </p:panelGrid>
+
+                                <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank" > 
+                                    <h:outputText value="Confirmação de senha" />
+                                    <p:inputText type="password" value="#{loginController.repetirSenha}" required="true" requiredMessage="Favor informar sua confirmação de senha." />                
+                                </p:panelGrid>
+
+                            </p:panelGrid>
+
+                     
+                            <h2 class="BigTopic"> </h2>
+
+                            <p:panelGrid   columns="2"  layout="grid" styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-0,ui-grid-col-0,ui-grid-col-0,ui-grid-col-0">
+                                <p:commandButton value="Salvar" actionListener="#{loginController.alterarSenha()}" update=":frmDetalhe msg"/>
+                                <p:commandButton value="Voltar" immediate="true" actionListener="#{loginController.mudarPagina('/principal/principal.jsf')}" />
+                            </p:panelGrid>
+
+
+                        </p:panelGrid>
+
+                    </h:form>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>

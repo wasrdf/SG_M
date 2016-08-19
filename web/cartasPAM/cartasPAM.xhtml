@@ -1,0 +1,301 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="head">
+        <script type="text/javascript">
+            function skinChart() {
+                this.cfg.shadow = false;
+                this.cfg.seriesColors = ['#71CC8D', '#33AFDE', '#F7941E'];
+                this.cfg.grid = {
+                    background: '#EDF3F6',
+                    borderColor: '#D9E3E8',
+                    gridLineColor: '#D9E3E8',
+                    shadow: false
+                };
+                this.cfg.axesDefaults = {
+                    rendererOptions: {
+                        textColor: '#778D9B'
+                    }
+                };
+                this.cfg.seriesDefaults = {
+                    shadow: false,
+                    markerOptions: {
+                        shadow: false
+                    }
+                }
+            }
+
+            function skinPie() {
+                this.cfg.seriesColors = ['#dae8ef', '#27aae1', '#33ccff', '#9fadb5'];
+                this.cfg.grid = {
+                    background: '#ffffff',
+                    borderColor: '#eaeaea',
+                    gridLineColor: '#e5ebf0',
+                    shadow: false,
+                    borderWidth: 0
+                };
+                this.cfg.seriesDefaults.shadow = false;
+            }
+        </script>
+        <style type="text/css">
+            .jqplot-target, .jqplot-axis {
+                color: #778D9B;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="content"  >
+
+        <div class="layout-portlets-box" >
+            <div class="Container100 ui-fluid">
+                <div class="ContainerIndent"> 
+
+                    <h2 class="BigTopic">Cartas PAM</h2>
+                    <p:messages id="messages"  autoUpdate="true" closable="true" />
+                    <p:growl autoUpdate="true"   id="msg"   />  
+                    <h:form id="frmLista" >
+
+                        <div class="Container100 Responsive100">
+                            <p:panelGrid rendered="#{cartasPamController.tela == 0}" columns="2" layout="grid" styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-3,ui-grid-col-0,ui-grid-col-0">
+                                <p:outputLabel value="Nome do missionário"/>
+                                <p:outputLabel value=""/>
+
+                                <p:inputText value="#{cartasPamController.pesquisa}"/>
+                                <p:commandButton value="Buscar" actionListener="#{cartasPamController.listarCartas()}" update="listaPesquisa"/>
+                            </p:panelGrid>
+                        </div>
+                        <p:panelGrid rendered="#{cartasPamController.tela == 0}" columns="5" layout="grid" styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-5,ui-grid-col-5,ui-grid-col-5,ui-grid-col-5,ui-grid-col-5">
+
+                            <p:panelGrid columns="2" styleClass="ui-panelgrid-blank"  >
+                                <p:graphicImage  alt="Aguardando Correção para o Envio" name="images/img/aguardando_correcao.png" width="30" height="30"  library="spark-layout" />
+                                <p:commandLink value="Aguardando Correção para o Envio"  title="Aguardando Correção para o Envio"  actionListener="#{cartasPamController.listarCartasPorSituação(('Aguardando Correção para o Envio'))}" style="text-decoration: none"  update=":frmDetalhe :frmLista" />
+                            </p:panelGrid>
+                            <p:panelGrid columns="2" styleClass="ui-panelgrid-blank"  >
+                                <p:graphicImage  alt="Reprovada pelo coordenador" name="images/img/reprovada.png" width="30" height="30"  library="spark-layout" />
+                                <p:commandLink value="Reprovada Pelo Coordenador"  title="Reprovada pelo coordenador"  actionListener="#{cartasPamController.listarCartasPorSituação(('Reprovada pelo coordenador'))}" style="text-decoration: none"  update=":frmDetalhe :frmLista" />
+                            </p:panelGrid>
+                            <p:panelGrid columns="2" styleClass="ui-panelgrid-blank"  >
+                                <p:graphicImage  alt="Aguardando Aprovação do Coordenador" name="images/img/aguardando_aprovacao.png" width="30" height="30"  library="spark-layout" />                                        
+                                <p:commandLink value="Aguardando Aprovação do Coordenador"  title="Aguardando Aprovação do Coordenador"  actionListener="#{cartasPamController.listarCartasPorSituação(('Aguardando Aprovação do Coordenador'))}" style="text-decoration: none"  update=":frmDetalhe :frmLista" />
+                            </p:panelGrid>
+                            <p:panelGrid columns="2" styleClass="ui-panelgrid-blank"  >
+                                <p:graphicImage  alt="Carta pronta para envio" name="images/img/carta_pronta.png" width="30" height="30"  library="spark-layout" />                                        
+                                <p:commandLink value="Carta Pronta Para Envio"  title="Carta pronta para envio"  actionListener="#{cartasPamController.listarCartasPorSituação(('Carta pronta para envio'))}" style="text-decoration: none"  update=":frmDetalhe :frmLista" />
+                            </p:panelGrid>
+
+                            <p:panelGrid columns="2"  styleClass="ui-panelgrid-blank"   >
+                                <p:graphicImage  alt="Enviada" name="images/img/enviada.png" width="30" height="30"  library="spark-layout" />
+                                <p:commandLink value="Enviada"  title="Enviada"  actionListener="#{cartasPamController.listarCartasPorSituação(('Enviada'))}" style="text-decoration: none"  update=":frmDetalhe :frmLista" />
+                            </p:panelGrid>
+
+
+                        </p:panelGrid>
+
+                        <div class="Container100 Responsive100" >
+                            <p:dataTable id="listaPesquisa" var="cartas" value="#{cartasPamController.listaCarta}" rendered="#{cartasPamController.tela == 0}" reflow="true" style="" emptyMessage="Lista vazia">
+                                <p:column headerText="Status" sortBy="#{cartas.situacao}">
+                                    <p:column sortBy="#{cartas.situacao}" width="10%"  style="text-align: center">
+                                        <p:graphicImage  alt="Enviada" name="images/img/enviada.png" width="30" height="30" rendered="#{cartas.situacao.equals('Enviada')}" library="spark-layout" />
+                                        <p:graphicImage  alt="Aguardando Correção para o Envio" name="images/img/aguardando_correcao.png" width="30" height="30" rendered="#{cartas.situacao.equals('Aguardando Correção para o Envio')}" library="spark-layout" />
+                                        <p:graphicImage  alt="Reprovada pelo coordenador" name="images/img/reprovada.png" width="30" height="30" rendered="#{cartas.situacao.equals('Reprovada pelo coordenador')}" library="spark-layout" />
+                                        <p:graphicImage  alt="Aguardando Aprovação do Coordenador" name="images/img/aguardando_aprovacao.png" width="30" height="30" rendered="#{cartas.situacao.equals('Aguardando Aprovação do Coordenador')}" library="spark-layout" />                                        
+                                        <p:graphicImage  alt="Carta pronta para envio" name="images/img/carta_pronta.png" width="30" height="30" rendered="#{cartas.situacao.equals('Carta Pronta Para Envio')}" library="spark-layout" />                                        
+                                    </p:column>
+                                </p:column>
+
+                                <p:column headerText="Missionário" width="50%" sortBy="#{cartas.missionario}">
+                                    <p:commandLink value="#{cartas.missionario}"  title="#{cartas.missionario}"  actionListener="#{cartasPamController.selecionar(cartas)}"  update=":frmDetalhe :frmLista" />
+                                </p:column>
+                                <p:column headerText="Data cadastro" width="10%" sortBy="#{cartas.dtCadastro}" >
+                                    <p:outputLabel value="#{cartas.dtCadastro}" >                
+                                        <f:convertDateTime type="date" pattern="dd/MM/yyyy" dateStyle="medium" locale="pt_BR" timeZone="GMT-3"/>
+                                    </p:outputLabel>
+                                </p:column>
+                                <p:column headerText="Data de edição" width="10%" sortBy="#{cartas.dtEdicao}" >
+                                    <p:outputLabel value="#{cartas.dtEdicao}" >                
+                                        <f:convertDateTime type="date" pattern="dd/MM/yyyy" dateStyle="medium" locale="pt_BR" timeZone="GMT-3"/>
+                                    </p:outputLabel>
+                                </p:column>
+                                <p:column headerText="Data de envio" width="10%" sortBy="#{cartas.dtEnvio}" >
+                                    <p:outputLabel value="#{cartas.dtEnvio}" >                
+                                        <f:convertDateTime type="date" pattern="dd/MM/yyyy" dateStyle="medium" locale="pt_BR" timeZone="GMT-3"/>
+                                    </p:outputLabel>
+                                </p:column>
+
+                                <p:column headerText="Detalhe" width="10%">
+                                    <p:commandButton icon="fa fa-search Fs18 white"  actionListener="#{cartasPamController.selecionar(cartas)}"  update=":frmDetalhe :frmLista"/>
+                                </p:column>
+                            </p:dataTable>
+
+                        </div>
+                    </h:form>
+
+                    <h:form id="frmDetalhe">
+
+                        <p:panelGrid rendered="#{cartasPamController.tela == 1}" columns="1" layout="grid" styleClass="ui-panelgrid-blank" >
+                            <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank"  >
+                                <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-12" > 
+                                    <h:outputText value="Missionário" />
+                                    <p:outputLabel value="#{cartasPamController.cartasPAM.missionario}"   />                
+                                </p:panelGrid>
+                            </p:panelGrid>
+
+
+                            <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank"  >
+                                <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-2" > 
+                                    <h:outputText value="Código" />
+                                    <h:outputText value="#{cartasPamController.cartasPAM.idCarta}"  rendered="#{cartasPamController.cartasPAM.idCarta != 0}" />
+                                    <h:outputText value="*" rendered="#{cartasPamController.cartasPAM.idCarta == 0}"  />
+                                </p:panelGrid>
+                            </p:panelGrid>
+
+                            <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank"  >
+                                <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-4" > 
+                                    <p:outputLabel value="Data de Cadastro" />
+                                    <p:outputLabel value="#{cartasPamController.cartasPAM.dtCadastro}" >                
+                                        <f:convertDateTime type="date" pattern="dd/MM/yyyy" dateStyle="medium" locale="pt_BR" timeZone="GMT-3"/>
+                                    </p:outputLabel>
+                                </p:panelGrid>
+                            </p:panelGrid>
+
+
+
+                            <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-12" >
+                                <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-4" > 
+                                    <p:outputLabel value="Situação" />
+                                    <p:selectOneMenu required="#{param['frmDetalhe:salvar'] !=  null }" requiredMessage="Favor selecionar a pessoa(conexus)"  value="#{cartasPamController.cartasPAM.situacao}" id="listaPessoa" >
+                                        <f:selectItem itemLabel="situação" itemValue="#{null}" />
+                                        <f:selectItem itemLabel="Aguardando Correção para o Envio" itemValue="Aguardando Correção para o Envio" />
+                                        <f:selectItem itemLabel="Reprovada pelo coordenador" itemValue="Reprovada pelo Coordenador" />
+                                        <f:selectItem itemLabel="Aguardando Aprovação do Coordenador" itemValue="Aguardando Aprovação do Coordenador" />
+                                        <f:selectItem itemLabel="Carta Pronta para Envio" itemValue="Carta Pronta Para Envio" />
+                                        <f:selectItem itemLabel="Enviada" itemValue="Enviada" />                                         
+                                    </p:selectOneMenu>
+                                </p:panelGrid>
+
+                            </p:panelGrid>
+
+
+                            <p:panelGrid rendered="#{!cartasPamController.cartasPAM.parecer.equals('')}" columns="1" layout="grid" styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-12" >
+                                <p:panelGrid  columns="1" layout="grid" styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-6" >
+                                    <h:outputText value="Parecer" />
+                                    <p:outputLabel value="#{cartasPamController.cartasPAM.parecer}"   />                
+                                </p:panelGrid>
+                            </p:panelGrid>
+
+
+                            <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-12" >
+                                <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-12" >                                     
+                                    <p:outputLabel value="Carta" />
+                                    <p:editor height="500"  maxlength="3000" class="" value="#{cartasPamController.cartasPAM.cartaCompleta}"   />
+                                </p:panelGrid>
+                            </p:panelGrid>
+
+                            <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-12" >
+                                <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-12" >                              
+                                    <p:graphicImage id="pnlFoto" value="../image/#{cartasPamController.cartasPAM.path}" style="width: 500px;" class="Responsive"   />        
+                                </p:panelGrid>
+                            </p:panelGrid>
+
+                            <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-6" >
+                                <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-3" >                                  
+                                    <p:commandButton value="Anexar Imagem"  onclick="PF('imagemanexo').show()"  />
+                                </p:panelGrid>
+                            </p:panelGrid>
+
+                            <p:dialog  widgetVar="imagemanexo" id="imagemanexo"  width="600px" resizable="false" closable="true" >
+                                <h:form enctype="multipart/form-data"  id="formDocumento">
+                                    <h:panelGrid columns="1">
+                                        <p:fileUpload fileUploadListener="#{cartasPamController.upload}" 
+                                                      sizeLimit="2097152"  cancelLabel="Cancelar" uploadLabel="Enviar Arquivos"
+                                                      allowTypes="/(\.|\/)(gif|jpe?g|png)$/" invalidFileMessage="Arquivo inválido" 
+                                                      label="Selecionar Arquivo" invalidSizeMessage="Arquivo muito grande.Tamanho limite 2 MB's"    oncomplete="PF('imagemanexo').hide()" 
+                                                      fileLimit="1" fileLimitMessage="Só é permitido inserir uma foto." />
+                                    </h:panelGrid>
+                                </h:form>
+                                <p:ajax event="close" update="pnlFoto" />
+                            </p:dialog>
+
+
+                            <!--*****************************FIM****************************-->
+
+                            <h2 class="BigTopic"> </h2>
+
+                            <p:panelGrid   columns="5"  layout="grid" styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-0,ui-grid-col-0,ui-grid-col-0,ui-grid-col-0">
+                                <p:commandButton value="Salvar" actionListener="#{cartasPamController.alterarCarta(0)}" id="salvar" ajax="false" update=":frmDetalhe :frmLista msg"/>
+                                <p:commandButton value="Gerar lista de parceiro que não possuem email" ajax="false"  update=":frmDetalhe :frmLista" >
+                                    <p:dataExporter type="xls" target="sEmail" fileName="parceiros_sem_email" pageOnly="true"/>
+                                </p:commandButton>
+                                
+                            <p:commandButton value="Gerar carta" immediate="true" actionListener="#{cartasPamController.mudarTela(0)}" update=":frmDetalhe :frmLista" />                          
+                                <p:commandButton value="Voltar" immediate="true" actionListener="#{cartasPamController.mudarTela(0)}" update=":frmDetalhe :frmLista" />
+
+                                <p:commandButton value="Deletar" styleClass="RedButton" actionListener="#{cartasPamController.deletarCarta(0)}"  rendered="#{cartasPamController.cartasPAM.idCarta!=0}" update=":frmDetalhe :frmLista msg">
+                                    <p:confirm header="Confirmação" message="Deseja excluir o registro?" icon="ui-icon-alert" />
+                                </p:commandButton>
+
+                                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                                    <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" />
+                                    <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" />
+                                </p:confirmDialog>                                                              
+
+                            </p:panelGrid>
+
+
+                        </p:panelGrid>
+
+                        <!--DATA TABLE PARCEIRO SEM EMAIL -->
+                        <p:dataTable style="display: none"  id="sEmail" var="sEmail" value="#{cartasPamController.listaParceiroSemEmail}"  reflow="true" emptyMessage="Lista vazia">
+                            <p:column headerText="Código" >
+                                <p:outputLabel value="#{sEmail.cdChamada}"    />
+                            </p:column>
+                            <p:column headerText="Nome"  >
+                                <p:outputLabel value="#{sEmail.nome}"    />
+                            </p:column>
+                            <p:column headerText="CEP"  >
+                                <p:outputLabel value="#{sEmail.cep}"    />
+                            </p:column>
+                            <p:column headerText="Tipo Logradouro"  >
+                                <p:outputLabel value="#{sEmail.logradouroTipo}"    />
+                            </p:column>
+
+                            <p:column headerText="Logradouro"  >
+                                <p:outputLabel value="#{sEmail.logradouro}"    />
+                            </p:column>
+                            <p:column headerText="Número"  >
+                                <p:outputLabel value="#{sEmail.logradouroNumero}"    />
+                            </p:column>
+                            <p:column headerText="Complemento"  >
+                                <p:outputLabel value="#{sEmail.complemento}"    />
+                            </p:column>
+                            <p:column headerText="Bairro"  >
+                                <p:outputLabel value="#{sEmail.bairro}"    />
+                            </p:column>            
+                            <p:column headerText="Cidade"  >
+                                <p:outputLabel value="#{sEmail.cidade}"    />
+                            </p:column>
+                            <p:column headerText="UF"  >
+                                <p:outputLabel value="#{sEmail.uf}"    />
+                            </p:column>
+                            <p:column headerText="Email"  >
+                                <p:outputLabel value="#{sEmail.email}"    />
+                            </p:column>
+                        </p:dataTable>            
+                      
+                        <!-- FIM -->
+
+
+
+
+                    </h:form>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>
